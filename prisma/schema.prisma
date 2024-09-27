@@ -12,3 +12,56 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id          Int      @id @default(autoincrement())
+  firstName   String   // Nome
+  lastName    String?  // Sobrenome (opcional)
+  whatsapp    String   @unique // WhatsApp (obrigatório e único)
+  email       String   @unique // Email (obrigatório e único)
+  password    String   // Senha (obrigatório)
+  cep         String?  // CEP (opcional)
+  address     String   // Endereço (obrigatório)
+  number      String?  // Número (opcional)
+  complement  String?  // Complemento (opcional)
+  role        Role     @default(USER) // Enum com opções "USER" e "ADM"
+}
+
+enum Role {
+  USER
+  ADM
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String   // Nome do produto (obrigatório)
+  description String?  // Descrição do produto (opcional)
+  price       Float    // Preço do produto (obrigatório)
+  imageUrl    String?  // URL da imagem do produto (opcional)
+  status      Status   @default(DISPONIVEL) // Status do produto (ENUM)
+  tag         String   // Tag do produto (obrigatório, não único)
+  createdAt   DateTime @default(now()) // Data de criação (automático)
+  updatedAt   DateTime @updatedAt      // Data de atualização (automático)
+  CartItems   CartItem[] // Relacionamento com itens do carrinho
+}
+
+enum Status {
+  DISPONIVEL
+  INDISPONIVEL
+}
+
+model Cart {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  CartItems   CartItem[]
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  quantity  Int
+  productId Int
+  cartId    Int
+  Product   Product @relation(fields: [productId], references: [id])
+  Cart      Cart    @relation(fields: [cartId], references: [id])
+}
