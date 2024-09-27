@@ -102,18 +102,22 @@ export const getTags = async (c: Context) => {
   }
 };
 
-// Função para buscar produtos por tag
+// Função para buscar produtos por múltiplas tags
 export const getProductsByTag = async (c: Context) => {
-  const { tag } = c.req.param();
+  const { tags } = c.req.query(); // Recebe as tags como query parameter (exemplo: ?tags=tag1,tag2)
+
   try {
+    const tagsArray = tags.split(','); // Converte a string de tags em um array
     const products = await prisma.product.findMany({
       where: {
-        tag: tag,
+        tag: {
+          in: tagsArray, // Utiliza o operador "in" para buscar produtos com qualquer uma das tags
+        },
       },
     });
 
     if (products.length === 0) {
-      return c.json({ error: 'Nenhum produto encontrado para esta tag.' }, 404);
+      return c.json({ error: 'Nenhum produto encontrado para essas tags.' }, 404);
     }
 
     return c.json(products);
