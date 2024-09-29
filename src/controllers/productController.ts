@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Status } from '@prisma/client';
 import { Context } from 'hono';
 
 const prisma = new PrismaClient();
@@ -31,20 +31,25 @@ export const getProductById = async (c: Context) => {
 
 // Função para criar um novo produto
 export const createProduct = async (c: Context) => {
-  const { name, price, description, imageUrl, status, tag } = await c.req.json();
+  const formData = await c.req.parseBody();
+  
+  const { name, price, description, status, tag } = formData as { name: string, price: string, description: string, status: string, tag: string };
+  const imageUrl = formData.image ? String(formData.image) : '';
+
   try {
     const newProduct = await prisma.product.create({
       data: {
         name,
-        price,
+        price: parseFloat(price),
         description,
         imageUrl,
-        status,
+        status: status as Status,
         tag,
       },
     });
     return c.json(newProduct, 201);
   } catch (error) {
+    console.error('Erro ao criar produto:', error);
     return c.json({ error: 'Erro ao criar produto.' }, 500);
   }
 };
