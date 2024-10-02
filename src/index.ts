@@ -37,3 +37,5 @@ try {
 } catch (error) {
     console.error('Erro ao iniciar servidor:', error);
 }
+
+export default app;
