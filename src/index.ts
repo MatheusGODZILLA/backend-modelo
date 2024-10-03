@@ -11,7 +11,7 @@ dotenv.config();
 const app = new Hono();
 
 // Usar o middleware de CORS do Hono
-// app.use('*', cors());
+app.use('*', cors());
 // app.use(
 //   '*',
 //   cors({
@@ -29,16 +29,14 @@ app.get('/', (c) => c.text('Servidor EsayCart Modelo'));
 app.route('/', productRouter);
 
 // Servir a aplicação
-// const port = process.env.PORT || 3000;
-// try {
-//     serve(app).listen(port, () => {
-//         console.log(`Servidor rodando na porta: ${port}`);
-//     });
-// } catch (error) {
-//     console.error('Erro ao iniciar servidor:', error);
-// }
-
-// export default app;
+const port = process.env.PORT || 3000;
+try {
+    serve(app).listen(port, () => {
+        console.log(`Servidor rodando na porta: ${port}`);
+    });
+} catch (error) {
+    console.error('Erro ao iniciar servidor:', error);
+}
 
 // serve({
 //     fetch: app.fetch,
