@@ -1,20 +1,14 @@
 import { Hono } from 'hono';
-import { handle } from '@hono/node-server/vercel';
-import { cors } from 'hono/cors';
+import { serve } from '@hono/node-server';
+import { cors } from 'hono/cors'
 import productRouter from './routes/productRoutes';
 import dotenv from 'dotenv';
 
 // Carrega as variáveis de ambiente
 dotenv.config();
 
-// Configuração da API para o Next.js
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-const app = new Hono().basePath('/api');
+// Instancia o app
+const app = new Hono();
 
 // Usar o middleware de CORS do Hono
 app.use('*', cors());
@@ -30,13 +24,20 @@ app.use(
   })
 );
 
-// Rotas
-app.get('/', (c) => {
-  return c.text('Servidor EasyCart Modelo');
-});
+app.get('/', (c) => c.text('Servidor EsayCart Modelo'));
 
-// Usar o roteador de produtos
 app.route('/', productRouter);
 
-// Exportar o manipulador
-export default handle(app);
+// Servir a aplicação
+// const port = process.env.PORT || 3000;
+// try {
+//     serve(app).listen(port, () => {
+//         console.log(`Servidor rodando na porta: ${port}`);
+//     });
+// } catch (error) {
+//     console.error('Erro ao iniciar servidor:', error);
+// }
+
+// export default app;
+
+serve(app);
