@@ -11,27 +11,18 @@ dotenv.config();
 const app = new Hono();
 
 // Usar o middleware de CORS do Hono
-// app.use('*', cors());
-// app.use(
-//   '*',
-//   cors({
-//     origin: process.env.ALLOWED_ORIGIN || '*',
-//     allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests'],
-//     allowMethods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE', 'PATCH'],
-//     exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
-//     maxAge: 600,
-//     credentials: true,
-//   })
-// );
-
-const corsConfig = {
-    origin: process.env.ALLOWED_ORIGIN || '',
+app.use('*', cors());
+app.use(
+  '*',
+  cors({
+    origin: process.env.ALLOWED_ORIGIN || '*',
+    allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests'],
+    allowMethods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE', 'PATCH'],
+    exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
+    maxAge: 600,
     credentials: true,
-    methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE', 'PATCH']
-}
-
-app.use(cors(corsConfig))
-app.options("", cors(corsConfig))
+  })
+);
 
 app.get('/', (c) => c.text('Servidor EsayCart Modelo'));
 
