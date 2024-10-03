@@ -29,13 +29,13 @@ app.get('/', (c) => {
 app.route('/', productRouter);
 
 // Servir a aplicação
-const port = process.env.PORT || 3000;
-try {
-    serve(app).listen(port, () => {
-        console.log(`Servidor rodando na porta: ${port}`);
-    });
-} catch (error) {
-    console.error('Erro ao iniciar servidor:', error);
-}
+// const port = process.env.PORT || 3000;
+// try {
+//     serve(app).listen(port, () => {
+//         console.log(`Servidor rodando na porta: ${port}`);
+//     });
+// } catch (error) {
+//     console.error('Erro ao iniciar servidor:', error);
+// }
 
 export default app;
