@@ -1,41 +1,42 @@
 import { Hono } from 'hono';
-import { serve } from '@hono/node-server';
+import { handle } from '@hono/node-server/vercel';
+import { cors } from 'hono/cors';
 import productRouter from './routes/productRoutes';
 import dotenv from 'dotenv';
 
 // Carrega as variáveis de ambiente
 dotenv.config();
 
-// Instancia o app
-const app = new Hono();
+// Configuração da API para o Next.js
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
+const app = new Hono().basePath('/api');
 
 // Usar o middleware de CORS do Hono
-app.use('*', async (c, next) => {
-    c.header('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN || '*');
-    c.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, PATCH');
-    c.header('Access-Control-Allow-Headers', 'Content-Type');
-    
-    if (c.req.method === 'OPTIONS') {
-        return c.text('OK', 200);
-    }
+app.use('*', cors());
+app.use(
+  '*',
+  cors({
+    origin: process.env.ALLOWED_ORIGIN || '*',
+    allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests'],
+    allowMethods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE', 'PATCH'],
+    exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
+    maxAge: 600,
+    credentials: true,
+  })
+);
 
-    await next();
-});
-
+// Rotas
 app.get('/', (c) => {
   return c.text('Servidor EasyCart Modelo');
 });
 
+// Usar o roteador de produtos
 app.route('/', productRouter);
 
-// Servir a aplicação
-const port = process.env.PORT || 3000;
-try {
-    serve(app).listen(port, () => {
-        console.log(`Servidor rodando na porta: ${port}`);
-    });
-} catch (error) {
-    console.error('Erro ao iniciar servidor:', error);
-}
-
-export default app;
+// Exportar o manipulador
+export default handle(app);
