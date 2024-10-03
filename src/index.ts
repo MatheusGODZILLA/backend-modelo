@@ -3,6 +3,7 @@ import { serve } from '@hono/node-server';
 import { cors } from 'hono/cors'
 import productRouter from './routes/productRoutes';
 import dotenv from 'dotenv';
+import { handle } from "@hono/node-server/vercel";
 
 // Carrega as variáveis de ambiente
 dotenv.config();
@@ -26,17 +27,17 @@ app.use('*', cors());
 
 app.get('/', (c) => c.text('Servidor EsayCart Modelo'));
 
-app.route('/', productRouter);
+// app.route('/', productRouter);
 
 // Servir a aplicação
-const port = process.env.PORT || 3000;
-try {
-    serve(app).listen(port, () => {
-        console.log(`Servidor rodando na porta: ${port}`);
-    });
-} catch (error) {
-    console.error('Erro ao iniciar servidor:', error);
-}
+// const port = process.env.PORT || 3000;
+// try {
+//     serve(app).listen(port, () => {
+//         console.log(`Servidor rodando na porta: ${port}`);
+//     });
+// } catch (error) {
+//     console.error('Erro ao iniciar servidor:', error);
+// }
 
 // serve({
 //     fetch: app.fetch,
@@ -45,4 +46,4 @@ try {
 
 // serve(app);
 
-export default app;
+export default handle (app);
